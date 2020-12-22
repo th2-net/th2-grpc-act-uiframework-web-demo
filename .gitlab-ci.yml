@@ -47,7 +47,9 @@ build:
       --build-arg artifactory_url=${ARTIFACTORY_URL}
       --build-arg nexus_url=${NEXUS_URL}
       --build-arg nexus_user=${NEXUS_USER}
+      --build-arg bintray_user=${BINTRAY_USER}
       --build-arg nexus_password=${NEXUS_PASS}
+      --build-arg bintray_password=${BINTRAY_PASS}
       --build-arg pypi_repository_url=${PYPI_REPOSITORY_URL}
       --build-arg pypi_user=${PYPI_USER}
       --build-arg pypi_password=${PYPI_PASSWORD}
