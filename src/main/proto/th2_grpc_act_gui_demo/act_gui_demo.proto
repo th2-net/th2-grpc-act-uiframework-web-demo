@@ -1,0 +1,63 @@
+/*
+ * Copyright 2020-2020 Exactpro (Exactpro Systems Limited)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto3";
+package th2_grpc_act_gui_demo;
+
+import "th2_grpc_hand/rhbatch.proto";
+import "th2_grpc_common/common.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.exactpro.th2.act.grpc";
+
+service HandWinAct {
+  rpc register(RhTargetServer) returns (RhSessionID) {
+  }
+  
+  rpc unregister(RhSessionID) returns (google.protobuf.Empty) {
+  }
+
+  rpc sendExecutionReport (ExecutionReportParams) returns (TestRhBatchResponse) {
+  }
+}
+
+message TestRhBatchResponse{
+  RhBatchResponse batchResponse = 1;
+  Checkpoint checkpoint = 2;
+}
+
+message ExecutionReportParams {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string messageType = 19;
+  string session = 3;
+  string BeginString = 4;
+  string BodyLength = 5;
+  string SenderCompID = 6;
+  string TargetCompID = 7;
+  string MsgSeqNum = 8;
+  string ExecID = 9;
+  string ClOrdID = 10;
+  string OrderID = 11;
+  string LeavesQty = 12;
+  string CumQty = 13;
+  string SecurityID = 14;
+  string PartyID = 15;
+  string OrderQty = 16;
+  string TransactTime = 17;
+  string CheckSum = 18;
+}

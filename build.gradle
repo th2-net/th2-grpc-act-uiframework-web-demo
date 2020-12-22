@@ -1,0 +1,216 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name 'Bintray'
+            url 'https://dl.bintray.com/exactpro/th2'
+        }
+        maven {
+            name 'Artifactory release'
+            url 'http://artifactory5.exp.exactpro.com/artifactory/libs-release'
+        }
+        mavenLocal()
+    }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.13"
+        classpath "com.exactpro.th2:grpc-service-generator:2.0.5"
+    }
+}
+plugins {
+    id "com.jfrog.artifactory" version '4.15.1'
+    id "com.jfrog.bintray" version '1.8.5'
+}
+
+//plugins {
+//    id "com.jfrog.bintray" version '1.8.5'
+//}
+
+apply plugin: "java"
+apply plugin: "java-library"
+apply plugin: "com.google.protobuf"
+apply plugin: "com.exactpro.th2.service-generator"
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.bintray"
+
+group = 'com.exactpro.th2'
+version = release_version
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+ext {
+    grpcVersion         = '1.32.1'
+    protobufVersion     = '3.13.0'
+
+    genDir              = file("${project.rootDir}/src/gen")
+    sharedDir           = file("${project.rootDir}/shared")
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'Bintray'
+        url 'https://dl.bintray.com/exactpro/th2'
+    }
+    maven {
+        name 'Artifactory release'
+        url 'http://artifactory5.exp.exactpro.com/artifactory/libs-release'
+    }
+    mavenLocal()
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+
+}
+
+dependencies {
+    api platform('com.exactpro.th2:bom:2.9.+')
+
+    implementation "com.exactpro.th2:grpc-common"
+    implementation "com.exactpro.th2:grpc-hand:2.1.2"
+
+    api "com.google.protobuf:protobuf-java-util"
+    api "io.grpc:grpc-stub"
+    implementation "io.grpc:grpc-protobuf"
+    implementation "io.grpc:grpc-core"
+    implementation "io.grpc:grpc-netty"
+
+    implementation "javax.annotation:javax.annotation-api:1.3.2"
+
+    implementation "com.exactpro.th2:grpc-service-generator:2.0.5"
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDirs 'src/main/proto'
+        }
+        java {
+            srcDirs 'src/gen/main/java', 'src/gen/main/grpc', 'src/gen/main/services'
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks.generatedFilesBaseDir = genDir
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+        ofSourceSet('main')
+    }
+}
+
+generateServices.dependsOn.add('generateProto')
+compileJava.dependsOn.add('generateServices')
+
+serviceGeneration {
+    settings {
+        protoDir = "src/main/proto"
+        outDir = "src/gen/main/services"
+    }
+}
+
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            from components.java
+//        }
+//        bintrayPublication(MavenPublication) {
+//            from components.java
+//            groupId group
+//            artifactId rootProject.name
+//            version project.version
+//            pom.withXml {
+//                def root = asNode()
+//                root.appendNode('name', rootProject.name)
+//                root.appendNode('url', project.vcs_url)
+//            }
+//        }
+//    }
+//    repositories {
+//        maven {
+//            name = "localRepo"
+//            url = sharedDir
+//        }
+//    }
+//}
+//
+//bintray {
+//    user = "${bintray_user}"
+//    key = "${bintray_key}"
+//    publications = ['bintrayPublication']
+//    pkg {
+//        repo = 'th2'
+//        name = rootProject.name
+//        userOrg = 'exactpro'
+//        licenses = ['Apache-2.0']
+//        vcsUrl = project.vcs_url
+//        version {
+//            name = project.version
+//            desc = project.version
+//            released  = new Date()
+//        }
+//    }
+//    publish = true
+//}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "localRepo"
+            url = sharedDir
+        }
+    }
+    repositories {
+        maven {
+            name = 'nexusRepository'
+            credentials {
+                username = "${nexus_user}"
+                password = "${nexus_password}"
+            }
+            url = "${nexus_url}"
+        }
+    }
+}
+
+artifactory {
+    publish {
+        contextUrl = "${artifactory_url}"
+        repository {
+            repoKey = "${artifactory_deploy_repo_key}" // The Artifactory repository key to publish to
+            username = "${artifactory_user}" // The publisher user name
+            password = "${artifactory_password}" // The publisher password
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('mavenJava')
+            publishArtifacts = true
+            publishBuildInfo = true
+            // Properties to be attached to the published artifacts.
+            publishPom = true
+        }
+    }
+}
+
+
+clean {
+    delete genDir
+    delete sharedDir
+}
