@@ -119,7 +119,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'th2-grpc-common~=2.3.5',
-        'th2-grpc-hand==2.1.1'
+        'th2-grpc-hand==2.2.0'
     ],
     packages=packages,
     package_data=package_data,
