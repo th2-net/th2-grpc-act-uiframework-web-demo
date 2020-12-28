@@ -31,11 +31,11 @@ service HandWinAct {
   rpc unregister(RhSessionID) returns (google.protobuf.Empty) {
   }
 
-  rpc sendExecutionReport (ExecutionReportParams) returns (TestRhBatchResponse) {
+  rpc sendExecutionReport (ExecutionReportParams) returns (RhBatchResponseDemo) {
   }
 }
 
-message TestRhBatchResponse{
+message RhBatchResponseDemo{
   RhBatchResponse batchResponse = 1;
   Checkpoint checkpoint = 2;
 }
