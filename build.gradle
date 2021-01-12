@@ -21,10 +21,6 @@ plugins {
     id "com.jfrog.bintray" version '1.8.5'
 }
 
-//plugins {
-//    id "com.jfrog.bintray" version '1.8.5'
-//}
-
 apply plugin: "java"
 apply plugin: "java-library"
 apply plugin: "com.google.protobuf"
@@ -120,11 +116,26 @@ serviceGeneration {
         outDir = "src/gen/main/services"
     }
 }
-
+tasks.withType(PublishToMavenRepository) {
+    onlyIf {
+        (publication == publishing.publications.mavenJava)
+    }
+}
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+        }
+        bintrayPublication(MavenPublication) {
+            from components.java
+            groupId group
+            artifactId rootProject.name
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('name', rootProject.name)
+                root.appendNode('url', project.vcs_url)
+            }
         }
     }
     repositories {
@@ -166,6 +177,24 @@ artifactory {
     }
 }
 
+bintray {
+    user = "${bintray_user}"
+    key = "${bintray_key}"
+    publications = ['bintrayPublication']
+    pkg {
+        repo = 'th2'
+        name = rootProject.name
+        userOrg = 'exactpro'
+        licenses = ['Apache-2.0']
+        vcsUrl = project.vcs_url
+        version {
+            name = project.version
+            desc = project.version
+            released  = new Date()
+        }
+    }
+    publish = true
+}
 
 clean {
     delete genDir
