@@ -39,8 +39,21 @@ service HandWinAct {
 }
 
 message RhBatchResponseDemo{
-  RhBatchResponse batchResponse = 1;
   Checkpoint checkpoint = 2;
+
+  enum ExecutionStatus {
+    SUCCESS = 0;
+    ACT_ERROR = 1;
+    HAND_ERROR = 2;
+    COMPILE_ERROR = 3;
+    EXECUTION_ERROR = 4;
+  }
+
+  ExecutionStatus scriptStatus = 3;
+  string statusInfo = 4;
+  string errorInfo = 5;
+  map<string, string> data = 6;
+
 }
 
 message NewOrderSingleParams {
@@ -66,7 +79,7 @@ message NewOrderSingleParams {
     int32 Price = 10;
     TradingParty TradingParty = 11;
     string SecurityID = 12;
-    string DisplayQty = 13;
+    int32 DisplayQty = 13;
   }
   
   message TradingParty {
