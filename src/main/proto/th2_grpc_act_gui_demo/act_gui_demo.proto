@@ -31,7 +31,7 @@ service HandWinAct {
   rpc unregister(RhSessionID) returns (google.protobuf.Empty) {
   }
 
-  rpc sendExecutionReport (ExecutionReportParams) returns (RhBatchResponseDemo) {
+  rpc sendNewOrderSingle (NewOrderSingleParams) returns (RhBatchResponseDemo) {
   }
 
   rpc extractSentMessage (RptViewerDetails) returns (RhBatchResponseDemo) {
@@ -43,27 +43,41 @@ message RhBatchResponseDemo{
   Checkpoint checkpoint = 2;
 }
 
-message ExecutionReportParams {
+message NewOrderSingleParams {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
-  string messageType = 19;
-  string dictionary = 20;
-  string session = 3;
-  string BeginString = 4;
-  string BodyLength = 5;
-  string SenderCompID = 6;
-  string TargetCompID = 7;
-  string MsgSeqNum = 8;
-  string ExecID = 9;
-  string ClOrdID = 10;
-  string OrderID = 11;
-  string LeavesQty = 12;
-  string CumQty = 13;
-  string SecurityID = 14;
-  string PartyID = 15;
-  string OrderQty = 16;
-  string TransactTime = 17;
-  string CheckSum = 18;
+  
+  string messageType = 3;
+  string dictionary = 4;
+  string session = 5;
+
+  NewOrderSingleBody message = 6;
+  
+  message NewOrderSingleBody {
+    int32 OrderQty = 1;
+    string OrdType = 2;
+    string ClOrdID = 3;
+    string SecurityIDSource = 4;
+    string OrderCapacity = 5;
+    string TransactTime = 6;
+    string SecondaryClOrdID = 7;
+    int32 AccountType = 8;
+    string Side = 9;
+    int32 Price = 10;
+    TradingParty TradingParty = 11;
+    string SecurityID = 12;
+    string DisplayQty = 13;
+  }
+  
+  message TradingParty {
+    repeated NoPartyID NoPartyIDs = 1;
+  }
+
+  message NoPartyID {
+    int32 PartyRole = 1;
+    string PartyID = 2;
+    string PartyIDSource = 3;
+  }
 }
 
 message RptViewerDetails {
