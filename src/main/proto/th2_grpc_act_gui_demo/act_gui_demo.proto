@@ -33,6 +33,9 @@ service HandWinAct {
 
   rpc sendExecutionReport (ExecutionReportParams) returns (RhBatchResponseDemo) {
   }
+
+  rpc extractSentMessage (RptViewerDetails) returns (RhBatchResponseDemo) {
+  }
 }
 
 message RhBatchResponseDemo{
@@ -44,6 +47,7 @@ message ExecutionReportParams {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
   string messageType = 19;
+  string dictionary = 20;
   string session = 3;
   string BeginString = 4;
   string BodyLength = 5;
@@ -60,4 +64,10 @@ message ExecutionReportParams {
   string OrderQty = 16;
   string TransactTime = 17;
   string CheckSum = 18;
+}
+
+message RptViewerDetails {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string url = 3;
 }
