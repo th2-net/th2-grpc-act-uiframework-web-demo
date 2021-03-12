@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - master
+      - version-*
 #     paths:
 #     - gradle.properties
 
@@ -41,4 +42,3 @@ jobs:
           java-version: '11'
       - name: Build with Gradle
         run: ./gradlew clean build bintrayUpload -Pbintray_user=${{ secrets.BINTRAY_USER }} -Pbintray_key=${{ secrets.BINTRAY_KEY }}
-

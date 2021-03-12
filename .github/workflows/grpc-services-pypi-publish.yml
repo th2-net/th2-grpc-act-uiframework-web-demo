@@ -1,11 +1,11 @@
-name: Build and publish Python distributions to PyPI
+name: Build and publish Python distributions to PyPI. New gRPC generator
 
 on:
   push:
     branches:
-    - master
-#    paths:
-#    - package_info.json
+      - master
+#     paths:
+#     - package_info.json
 
 jobs:
   build-n-publish:
@@ -23,14 +23,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
-      - name: Create output folder
-        run: mkdir -p src/gen/main/python/${{steps.version.outputs.prop}}
-      - name: Run codegen
-        uses: docker://ghcr.io/th2-net/th2-python-service-generator:1.1.1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
         with:
-          entrypoint: /home/service/bin/service
-          args: |
-            -p /github/workspace/src/main/proto/${{steps.version.outputs.prop}} -w PythonServiceWriter -o /github/workspace/src/gen/main/python/${{steps.version.outputs.prop}}
+          java-version: '11'
+      - name: Build with Gradle
+        run: ./gradlew clean build
       - name: Build package
         run: |
           pip install -r requirements.txt
