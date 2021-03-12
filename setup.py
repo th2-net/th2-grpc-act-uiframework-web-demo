@@ -14,9 +14,6 @@
 
 import json
 import os
-import site
-from setuptools import setup, find_packages
-from setuptools.command.sdist import sdist
 from distutils.cmd import Command
 from distutils.dir_util import copy_tree
 from distutils.sysconfig import get_python_lib
@@ -24,6 +21,8 @@ from pathlib import Path
 from shutil import rmtree
 
 from pkg_resources import resource_filename
+from setuptools import setup, find_packages
+from setuptools.command.sdist import sdist
 
 
 class ProtoGenerator(Command):
@@ -53,8 +52,7 @@ class ProtoGenerator(Command):
         protos = [('grpc_tools', '_proto')]
         protos_include = [f'--proto_path={proto_path}'] + \
                          [f'--proto_path={resource_filename(x[0], x[1])}' for x in protos] + \
-                         [f'--proto_path={get_python_lib()}'] + \
-                         [f'--proto_path={site.getusersitepackages()}']
+                         [f'--proto_path={get_python_lib()}']
 
         from grpc_tools import protoc
         for proto_file in proto_files:
@@ -74,6 +72,7 @@ class CustomDist(sdist):
         copy_tree(f'src/main/proto/{package_name}', package_name)
 
         copy_tree(f'src/gen/main/python/{package_name}', package_name)
+        copy_tree(f'src/gen/main/services/python/{package_name}', package_name)
         Path(f'{package_name}/__init__.py').touch()
 
         def make_packages(root_dir):
@@ -114,12 +113,11 @@ setup(
     long_description_content_type='text/markdown',
     author='TH2-devs',
     author_email='th2-devs@exactprosystems.com',
-    url='https://gitlab.exactpro.com/vivarium/th2/th2-core-open-source/th2-grpc-act-gui-demo',
+    url='https://github.com/th2-net/th2-grpc-generator-template',
     license='Apache License 2.0',
     python_requires='>=3.7',
     install_requires=[
-        'th2-grpc-common~=3.0.0',
-        'th2-grpc-hand==2.5.4'
+        'grpcio-tools==1.33.1'
     ],
     packages=packages,
     package_data=package_data,

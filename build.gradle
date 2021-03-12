@@ -26,8 +26,8 @@ apply plugin: 'com.jfrog.bintray'
 group = 'com.exactpro.th2'
 version = release_version
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = 11
+targetCompatibility = 11
 
 ext {
     grpcVersion                 = '1.32.1'
@@ -50,7 +50,6 @@ repositories {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
         resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
     }
-
 }
 
 dependencies {
@@ -76,7 +75,10 @@ sourceSets {
             srcDirs 'src/main/proto'
         }
         java {
-            srcDirs 'src/gen/main/java', 'src/gen/main/grpc', 'src/gen/main/services'
+            srcDirs 'src/gen/main/java', 'src/gen/main/grpc', 'src/gen/main/services/java/src'
+        }
+        resources {
+            srcDirs 'src/gen/main/services/java/resources'
         }
     }
 }
@@ -129,10 +131,11 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 root.appendNode('name', rootProject.name)
-                root.appendNode('url', project.vcs_url)
+                root.appendNode('url', "${vcs_url}")
             }
         }
     }
+
     repositories {
         maven {
             name = 'localRepo'
@@ -159,11 +162,11 @@ bintray {
         name = rootProject.name
         userOrg = 'exactpro'
         licenses = ['Apache-2.0']
-        vcsUrl = project.vcs_url
+        vcsUrl = "${vcs_url}"
         version {
             name = project.version
             desc = project.version
-            released  = new Date()
+            released = new Date()
         }
     }
     publish = true

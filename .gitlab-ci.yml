@@ -1,33 +1,8 @@
 variables:
-  APP_NAME: "th2-grpc-act-gui-demo"
-  MAJOR_VERSION: "2"
-  MINOR_VERSION: "1"
-  MAINTENANCE_VERSION: "8"
   DOCKER_PUBLISH_ENABLED: 'false'
 
 include:
   - project: 'vivarium/th2/pipelines'
-    ref: master
+    ref: v2
     file: '/.gitlab-ci-common.yml'
-
-build:
-  extends: .build-template
-  variables:
-    DOCKER_INTERMEDIATE_TAG: "${CI_COMMIT_SHA}"
-    DOCKER_BUILD_ARGS: >-
-      --build-arg release_version=${APP_VERSION}
-      --build-arg artifactory_user=${ARTIFACTORY_USER}
-      --build-arg artifactory_password=${ARTIFACTORY_PASS}
-      --build-arg artifactory_deploy_repo_key=${ARTIFACTORY_REPO}
-      --build-arg artifactory_url=${ARTIFACTORY_URL}
-      --build-arg nexus_url=${NEXUS_URL}
-      --build-arg nexus_user=${NEXUS_USER}
-      --build-arg nexus_password=${NEXUS_PASS}
-      --build-arg pypi_repository_url=${PYPI_REPOSITORY_URL}
-      --build-arg pypi_user=${PYPI_USER}
-      --build-arg pypi_password=${PYPI_PASSWORD}
-      --build-arg app_name=${APP_NAME}
-      --build-arg app_version=${APP_VERSION}
-  dependencies:
-    - makeMetaEnv
 
