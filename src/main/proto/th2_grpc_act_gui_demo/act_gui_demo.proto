@@ -31,10 +31,13 @@ service HandWinAct {
   rpc unregister(RhSessionID) returns (google.protobuf.Empty) {
   }
 
-  rpc sendNewOrderSingle (NewOrderSingleParams) returns (RhBatchResponseDemo) {
+  rpc sendNewOrderSingleGui (NewOrderSingleParams) returns (RhBatchResponseDemo) {
   }
 
-  rpc extractSentMessage (RptViewerDetails) returns (RhBatchResponseDemo) {
+  rpc extractSentMessageGui (RptViewerDetails) returns (RhBatchResponseDemo) {
+  }
+
+  rpc findMessageGui (RptViewerSearchDetails) returns (RhBatchResponseDemo) {
   }
 }
 
@@ -97,4 +100,12 @@ message RptViewerDetails {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
   string url = 3;
+}
+
+message RptViewerSearchDetails {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string url = 3;
+  string msgType = 4;
+  string msgBody = 5;
 }
