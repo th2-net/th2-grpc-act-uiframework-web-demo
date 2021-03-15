@@ -61,6 +61,8 @@ message RhBatchResponseDemo{
 message NewOrderSingleParams {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
+  string description = 7;
+  
   
   string messageType = 3;
   string dictionary = 4;
@@ -98,12 +100,16 @@ message NewOrderSingleParams {
 message RptViewerDetails {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
+  string description = 4;
+  
   string url = 3;
 }
 
 message RptViewerSearchDetails {
   EventID eventID = 1;
   RhSessionID sessionID = 2;
+  string description = 6;
+  
   string url = 3;
   string msgType = 4;
   string msgBody = 5;
