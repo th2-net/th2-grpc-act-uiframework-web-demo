@@ -3,7 +3,7 @@ name: Dev build and publish Python distributions to PyPI. New gRPC generator
 on:
   push:
     branches-ignore:
-      - *
+    - '**'
 #    - master
 #    - version-*
 #     paths:
