@@ -1,13 +1,12 @@
-name: Dev build and publish Java distributions to Bintray
+name: Dev build and publish Java distributions to sonatype snapshot repository
 
 on:
   push:
-   branches-ignore:
-   - '**'
-#   - master
-#   - version-*
-#     paths:
-#     - gradle.properties
+    branches-ignore:
+    - master
+    - version-*
+    # paths:
+    # - gradle.properties
 
 jobs:
   build:
@@ -27,7 +26,7 @@ jobs:
           property: release_version
       - name: Build custom release version
         id: release_ver
-        run: echo ::set-output name=value::"${{ steps.ver.outputs.value }}-${{ steps.branch.outputs.branch_name }}-${{ github.run_id }}"
+        run: echo ::set-output name=value::"${{ steps.ver.outputs.value }}-${{ steps.branch.outputs.branch_name }}-${{ github.run_id }}-SNAPSHOT"
       - name: Write custom release version to file
         uses: christian-draeger/write-properties@1.0.1
         with:
@@ -42,5 +41,10 @@ jobs:
         with:
           java-version: '11'
       - name: Build with Gradle
-        run: ./gradlew clean build bintrayUpload -Pbintray_user=${{ secrets.BINTRAY_USER }} -Pbintray_key=${{ secrets.BINTRAY_KEY }}
+        run: ./gradlew --info clean build publish
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SONATYPE_GPG_ARMORED_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SONATYPE_SIGNING_PASSWORD }} 
 

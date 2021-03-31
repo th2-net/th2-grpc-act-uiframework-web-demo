@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - master
-#     paths:
-#     - package_info.json
+    paths:
+    - package_info.json
 
 jobs:
   build-n-publish:
