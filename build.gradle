@@ -16,7 +16,7 @@ targetCompatibility = 11
 ext {
     grpcVersion                 = '1.32.1'
     protobufVersion             = '3.13.0'
-    serviceGeneratorVersion     = '3.1.5'
+    serviceGeneratorVersion     = '3.1.10'
 
     genDir              = file("${project.rootDir}/src/gen")
     sharedDir           = file("${project.rootDir}/shared")
@@ -24,10 +24,6 @@ ext {
 
 repositories {
     mavenCentral()
-    maven {
-        name 'Bintray'
-        url 'https://dl.bintray.com/exactpro/th2'
-    }
     maven {
             name 'Sonatype_snapshots'
             url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
@@ -44,10 +40,10 @@ repositories {
 }
 
 dependencies {
-    api platform('com.exactpro.th2:bom:2.10.1')
+    api platform('com.exactpro.th2:bom:3.0.0')
 
-    implementation "com.exactpro.th2:grpc-common:3.0.0"
-    implementation "com.exactpro.th2:grpc-hand:2.5.4"
+    implementation "com.exactpro.th2:grpc-common:3.1.2"
+    implementation "com.exactpro.th2:grpc-hand:2.7.3"
 
     api "com.google.protobuf:protobuf-java-util"
     api "io.grpc:grpc-stub"
