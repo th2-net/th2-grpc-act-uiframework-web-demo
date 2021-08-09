@@ -23,21 +23,14 @@ import "google/protobuf/empty.proto";
 option java_multiple_files = true;
 option java_package = "com.exactpro.th2.act.grpc";
 
-service HandWinAct {
-  rpc register(RhTargetServer) returns (RhSessionID) {
-  }
+service UiFrameWorkHandWebAct {
   
-  rpc unregister(RhSessionID) returns (google.protobuf.Empty) {
-  }
-
-  rpc sendNewOrderSingleGui (NewOrderSingleParams) returns (RhBatchResponseDemo) {
-  }
-
-  rpc extractSentMessageGui (RptViewerDetails) returns (RhBatchResponseDemo) {
-  }
-
-  rpc findMessageGui (RptViewerSearchDetails) returns (RhBatchResponseDemo) {
-  }
+  rpc register(RhTargetServer) returns (RhSessionID) {}
+  rpc unregister(RhSessionID) returns (google.protobuf.Empty) {}
+  rpc sendNewOrderSingleGui (NewOrderSingleParams) returns (RhBatchResponseDemo) {}
+  rpc extractSentMessageGui (RptViewerDetails) returns (RhBatchResponseDemo) {}
+  rpc findMessageGui (RptViewerSearchDetails) returns (RhBatchResponseDemo) {}
+  
 }
 
 message RhBatchResponseDemo{
