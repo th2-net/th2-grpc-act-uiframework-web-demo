@@ -30,10 +30,16 @@ service UiFrameWorkHandWebAct {
   rpc sendNewOrderSingleGui (NewOrderSingleParams) returns (RhBatchResponseDemo) {}
   rpc extractSentMessageGui (RptViewerDetails) returns (RhBatchResponseDemo) {}
   rpc findMessageGui (RptViewerSearchDetails) returns (RhBatchResponseDemo) {}
-  
+  rpc getLastMessageFromProvider (GetLastMessageParams) returns (RhBatchResponseDemo) {}
 }
 
-message RhBatchResponseDemo{
+message GetLastMessageParams {
+  string stream = 1;
+  string msg_type = 2;
+  string msg_body = 3;
+}
+
+message RhBatchResponseDemo {
   Checkpoint checkpoint = 2;
 
   enum ExecutionStatus {
