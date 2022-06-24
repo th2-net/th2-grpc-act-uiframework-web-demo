@@ -23,14 +23,98 @@ import "google/protobuf/empty.proto";
 option java_multiple_files = true;
 option java_package = "com.exactpro.th2.act.grpc";
 
-service RestWebAct {
-  rpc getLastMessageFromProvider (GetLastMessageParams) returns (RestWebActResponseDemo) {}
+service UiFrameWorkHandWebAct {
+  rpc register(RhTargetServer) returns (RhSessionID) {}
+  rpc unregister(RhSessionID) returns (google.protobuf.Empty) {}
+  rpc sendNewOrderSingleGui (NewOrderSingleParams) returns (RhBatchResponseDemo) {}
+  rpc extractSentMessageGui (RptViewerDetails) returns (RhBatchResponseDemo) {}
+  rpc findMessageGui (RptViewerSearchDetails) returns (RhBatchResponseDemo) {}
+  rpc getLastMessageFromProvider (GetLastMessageParams) returns (RhBatchResponseDemo) {}
 }
 
 message GetLastMessageParams {
   string stream = 1;
   string msg_type = 2;
   string msg_body = 3;
+}
+
+message RhBatchResponseDemo {
+  Checkpoint checkpoint = 2;
+
+  enum ExecutionStatus {
+    SUCCESS = 0;
+    ACT_ERROR = 1;
+    HAND_ERROR = 2;
+    COMPILE_ERROR = 3;
+    EXECUTION_ERROR = 4;
+  }
+
+  ExecutionStatus scriptStatus = 3;
+  string statusInfo = 4;
+  string errorInfo = 5;
+  map<string, string> data = 6;
+
+}
+
+message NewOrderSingleParams {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string description = 7;
+
+
+  string messageType = 3;
+  string dictionary = 4;
+  string session = 5;
+
+  NewOrderSingleBody message = 6;
+
+  message NewOrderSingleBody {
+    int32 OrderQty = 1;
+    string OrdType = 2;
+    string ClOrdID = 3;
+    string SecurityIDSource = 4;
+    string OrderCapacity = 5;
+    string TransactTime = 6;
+    string SecondaryClOrdID = 7;
+    int32 AccountType = 8;
+    string Side = 9;
+    int32 Price = 10;
+    TradingParty TradingParty = 11;
+    string SecurityID = 12;
+    int32 DisplayQty = 13;
+  }
+
+  message TradingParty {
+    repeated NoPartyID NoPartyIDs = 1;
+  }
+
+  message NoPartyID {
+    int32 PartyRole = 1;
+    string PartyID = 2;
+    string PartyIDSource = 3;
+  }
+}
+
+message RptViewerDetails {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string description = 4;
+
+  string url = 3;
+}
+
+message RptViewerSearchDetails {
+  EventID eventID = 1;
+  RhSessionID sessionID = 2;
+  string description = 6;
+
+  string url = 3;
+  string msgType = 4;
+  string msgBody = 5;
+}
+
+service RestWebAct {
+  rpc getLastMessageFromProvider (GetLastMessageParams) returns (RestWebActResponseDemo) {}
 }
 
 message RestWebActResponseDemo {
